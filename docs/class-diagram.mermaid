@@ -1,0 +1,94 @@
+classDiagram
+
+%% ========== ENTITIES ==========
+
+class User {
+    +userId: number
+    +username: string
+    +email: string
+    +passwordHash: string
+    +firstName: string
+    +lastName: string
+    +phone: string
+    +role: string
+    +createdAt: Date
+    +changePassword(newPassword: string): void
+    +create(): void
+}
+
+class Product {
+    +productId: number
+    +name: string
+    +description: string
+    +price: number
+    +stock: number
+    +category: string
+    +imageUrl: string
+    +createdAt: Date
+    +updateStock(newStock: number): void
+    +create(): void
+}
+
+class Category {
+    +categoryId: number
+    +name: string
+    +description: string
+    +create(): void
+}
+
+class Cart {
+    +cartId: number
+    +userId: number
+    +addProduct(productId: number, quantity: number): void
+    +removeProduct(productId: number): void
+    +clearCart(): void
+}
+
+class CartItem {
+    +cartItemId: number
+    +cartId: number
+    +productId: number
+    +quantity: number
+    +total(): number
+}
+
+class Order {
+    +orderId: number
+    +userId: number
+    +status: string
+    +totalPrice: number
+    +orderDate: Date
+    +shippingAddress: string
+    +create(): void
+    +cancel(): void
+}
+
+class OrderItem {
+    +orderItemId: number
+    +orderId: number
+    +productId: number
+    +quantity: number
+    +price: number
+    +subtotal(): number
+}
+
+class Payment {
+    +paymentId: number
+    +orderId: number
+    +paymentMethod: string
+    +paymentDate: Date
+    +paymentStatus: string
+    +amount: number
+    +process(): void
+}
+
+%% ========== RELATIONSHIPS ==========
+
+User "1" --> "0..*" Order : places
+User "1" --> "1" Cart : owns
+Cart "1" --> "0..*" CartItem : contains
+CartItem "1" --> "1" Product : refers to
+Order "1" --> "1..*" OrderItem : includes
+OrderItem "1" --> "1" Product : refers to
+Order "1" --> "1" Payment : paid by
+Product "1" --> "1" Category : belongs to
