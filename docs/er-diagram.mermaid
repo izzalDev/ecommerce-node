@@ -1,0 +1,102 @@
+erDiagram
+    USER {
+        int user_id PK
+        string username
+        string email
+        string password_hash
+        string first_name
+        string last_name
+        string phone
+        enum role
+        datetime created_at
+    }
+    
+    CATEGORY {
+        int category_id PK
+        string name
+        string description
+        datetime created_at
+    }
+    
+    PRODUCT {
+        int product_id PK
+        string name
+        string description
+        decimal price
+        int stock_quantity
+        string image_url
+        int category_id FK
+        int created_by FK
+        datetime created_at
+        datetime updated_at
+    }
+    
+    CART {
+        int cart_id PK
+        int user_id FK
+        datetime created_at
+    }
+    
+    CART_ITEM {
+        int cart_item_id PK
+        int cart_id FK
+        int product_id FK
+        int quantity
+        decimal price
+    }
+    
+    ORDER {
+        int order_id PK
+        int user_id FK
+        string order_number
+        decimal total_amount
+        enum status
+        int processed_by FK
+        datetime order_date
+        datetime updated_at
+    }
+    
+    ORDER_ITEM {
+        int order_item_id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal unit_price
+        decimal total_price
+    }
+    
+    SHIPPING_ADDRESS {
+        int address_id PK
+        int user_id FK
+        string recipient_name
+        string street_address
+        string city
+        string postal_code
+        boolean is_default
+    }
+    
+    PAYMENT {
+        int payment_id PK
+        int order_id FK
+        decimal amount
+        enum payment_method
+        enum payment_status
+        datetime payment_date
+    }
+
+    %% Relationships
+    USER ||--o{ CART : "has"
+    USER ||--o{ ORDER : "places"
+    USER ||--o{ SHIPPING_ADDRESS : "has"
+    USER ||--o{ PRODUCT : "creates"
+    USER ||--o{ ORDER : "processes"
+    
+    CATEGORY ||--o{ PRODUCT : "contains"
+    
+    PRODUCT ||--o{ CART_ITEM : "added to"
+    PRODUCT ||--o{ ORDER_ITEM : "ordered"
+    
+    CART ||--o{ CART_ITEM : "contains"
+    
+    ORDER ||--o{ ORDER_ITEM : "contains"
+    ORDER ||--|| PAYMENT : "paid by"
